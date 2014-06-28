@@ -112,6 +112,7 @@ Any technical questions asked from the point on will be shown to the entire work
 - Matteo Collina - [mcollina](https://github.com/mcollina)
 - Tom Ashworth - [phuu](https://github.com/phuu)
 - Mike Brevoort - [mbrevoort](https://github.com/mbrevoort)
+- João Sousa Andrade - [joaosa](https://github.com/joaosa)
 - Tracy Hinds - [hackygolucky](https://github.com/hackygolucky)
 - Charlie Robbins - [indexzero](https://github.com/indexzero)
 - Jonathan Lipps - [jlipps](https://github.com/jlipps)
