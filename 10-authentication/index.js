@@ -19,13 +19,17 @@ app.use(session());
 // we need to set the `.keys` for signed cookies and the cookie-session module
 app.keys = ['secret1', 'secret2', 'secret3'];
 
+function authenticate(username, password) {
+  return username === 'username' && password === 'password';
+}
+
 app.use(function* home(next) {
   if (this.request.path !== '/') return yield next;
 
   if (!this.session.authenticated) this.throw(401, 'user not authenticated');
 
   this.response.body = 'hello world';
-})
+});
 
 /**
  * If successful, the logged in user should be redirected to `/`.
@@ -35,7 +39,23 @@ app.use(function* login(next) {
   if (this.request.path !== '/login') return yield* next;
   if (this.request.method === 'GET') return this.response.body = form.replace('{{csrf}}', this.csrf);
 
-})
+  if (this.request.method === 'POST') {
+    var data = yield parse.json(this);
+    try {
+      this.assertCSRF(data);
+    } catch (err) {
+      return this.status = 403;
+    }
+
+    if (authenticate(data.username, data.password)) {
+      this.session.authenticated = true;
+      this.status = 303;
+      this.redirect('/');
+    } else {
+      this.status = 400;
+    }
+  }
+});
 
 /**
  * Let's 303 redirect to `/login` after every response.
@@ -46,7 +66,10 @@ app.use(function* login(next) {
 app.use(function* logout(next) {
   if (this.request.path !== '/logout') return yield* next;
 
-})
+  this.session = null;
+  this.status = 303;
+  this.redirect('/login');
+});
 
 /**
  * Serve this page for browser testing if not used by another module.
